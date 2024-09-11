@@ -1,13 +1,14 @@
-Prerequisite:
+## Prerequisite:
 needs test framework cmocka
 
-To build:
+## build:
 
-mkdir build
-cd build
-cmake "../" -D"CMAKE_BUILD_TYPE=Debug"
-make
+mkdir build  
+cd build  
+cmake "../" -D"CMAKE_BUILD_TYPE=Debug"  
+make  
 
-To execute:
-cd build
-./isc
+## execute:
+
+cd build  
+./isc  
