@@ -1,0 +1,8 @@
+{
+    "cmake.buildBeforeRun": false,
+    "C_Cpp.dimInactiveRegions": false,
+    "files.associations": {
+        "unistd.h": "c"
+    },
+    "cmake.configureOnOpen": false
+}
