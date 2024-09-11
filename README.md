@@ -1,5 +1,5 @@
 Prerequisite:
-needs test framework 
+needs test framework cmocka
 
 To build:
 
