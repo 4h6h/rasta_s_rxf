@@ -66,6 +66,10 @@ void RXF_MainTask_executeAllEvents(void);
  *  MainTask shall be able to handle Events in a FIFO manner.
  *  
  */
+
+/* Forward declaration */
+struct SandboxInstances;
+
 /*#]*/
 /*## operation RXF_MainTask_executeOneEvent() */
 bool RXF_MainTask_executeOneEvent(void);
@@ -77,7 +81,7 @@ bool RXF_MainTask_executeOneEvent(void);
 // #define RXF_MainTask_start()    \
 //     (void)modelMain();
 /* #MISRA_D4.9=ON (end of ID-0007) */
-int32_t RXF_MainTask_start();
+int32_t RXF_MainTask_start(struct SandboxInstances* instances);
 /***    User explicit entries    ***/
 
 

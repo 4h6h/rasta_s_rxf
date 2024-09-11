@@ -1,49 +1,44 @@
-#include <RXF_Config.h>
-#include <RXF_EntryPoint.h>
 #include <RXF_MainTask.h>
-#include <RXF_TimerManager.h>
-#include <RXF_VirtualTable.h>
 
+#include "RXF_StandardTypes.h"
 #include "SandboxOperation.h"
-
 #include "cFec.h"
 #include "cDisp.h"
 #include "cRastaS.h"
+#include "RastaS_Cfg.h"
 
-// #include "Ipc.h"
+static cFecOP* itsCFecOP;
+static cDispOP* itsCDispOP;
+static cRastaSOP* itsCRastaSOP;
+static RastaSConfig* rastaConfig;
 
-static struct cFecOP itsCFecOP;
-static struct cDispOP itsCDispOP;
-static struct cRastaSOP itsCRastaSOP;
+#if 1
+static void SandboxOperation_initRelations(void) {
+    cFecOP_Init(itsCFecOP);
+    cDispOP_Init(itsCDispOP);
+    cRastaSOP_Init(itsCRastaSOP, rastaConfig);
 
-struct RastaSConfig;
-extern struct RastaSConfig rastaConfig;
-
-void SandboxOperation_OMInitializer_Init(void) {
-    SandboxOperation_initRelations();
-    (void) SandboxOperation_startBehavior();
-
+    cFecOP_p_Interface_connectOutBound( itsCFecOP, itsCRastaSOP->p_Interface.inBound._iFec );
+    cDispOP_p_Interface_connectOutBound( itsCDispOP, itsCRastaSOP->p_Interface.inBound._iDisp );
+    cRastaSOP_p_Interface_connectOutBound_Fec( itsCRastaSOP, itsCFecOP->p_Interface.inBound._iRastaS );
+    cRastaSOP_p_Interface_connectOutBound_Disp( itsCRastaSOP, itsCDispOP->p_Interface.inBound._iRastaSDisp );
 }
 
-void SandboxOperation_initRelations(void) {
-    cFecOP_Init(&(itsCFecOP));
-    cDispOP_Init(&(itsCDispOP));
-    cRastaSOP_Init(&(itsCRastaSOP), &(rastaConfig));
-
-    cFecOP_p_Interface_connectOutBound( &itsCFecOP, itsCRastaSOP.p_Interface.inBound._iFec );
-    cDispOP_p_Interface_connectOutBound( &itsCDispOP, itsCRastaSOP.p_Interface.inBound._iDisp );
-    cRastaSOP_p_Interface_connectOutBound_Fec( &itsCRastaSOP, itsCFecOP.p_Interface.inBound._iRastaS );
-    cRastaSOP_p_Interface_connectOutBound_Disp( &itsCRastaSOP, itsCDispOP.p_Interface.inBound._iRastaSDisp );
-    
-}
-
-RiCBoolean SandboxOperation_startBehavior(void) {
+static RiCBoolean SandboxOperation_startBehavior(void) {
     RiCBoolean done = RiCTRUE;
-
-    /* done = Ipc_init(); */ 
-
+    done = cFecOP_startBehavior(itsCFecOP) && done;
+    done = cDispOP_startBehavior(itsCDispOP) && done;
+    done = cRastaSOP_startBehavior(itsCRastaSOP) && done;
     return done;
 }
+
+#endif 
+
+static void SandboxOperation_OMInitializer_Init(void) {
+    SandboxOperation_initRelations();
+    (void) SandboxOperation_startBehavior();
+}
+
 
 void SandboxOperation_Main(void) {
    RXF_TimerManager_tick();
@@ -51,7 +46,22 @@ void SandboxOperation_Main(void) {
    RXF_MainTask_executeAllEvents();
 }
 
-int32_t RXF_MainTask_start() {
-    SandboxOperation_OMInitializer_Init();
-    return OK;
+int32_t RXF_MainTask_start(SandboxInstances* instances) {
+
+    int32_t status = NOT_OK;
+    if(RiCOXFInit(argc, argv, 6423, "RXF_Startup", 0, 0, RiCTRUE)) {
+        itsCFecOP = instances->itsCFecOP;
+        itsCDispOP = instances->itsCDispOP;
+        itsCRastaSOP = instances->itsCRastaSOP;
+        rastaConfig = instances->rastaConfig;
+
+        SandboxOperation_OMInitializer_Init();
+
+        status = OK;
+    }
+    else {
+        status = NOT_OK;
+    }
+    
+    return status;
 }

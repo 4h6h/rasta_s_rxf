@@ -19,12 +19,6 @@ endif()
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
-add_library(cmocka SHARED IMPORTED)
-set_target_properties(cmocka PROPERTIES
-    IMPORTED_LOCATION "/usr/local/lib/libcmocka.dylib"
-    INTERFACE_INCLUDE_DIRECTORIES "/usr/local/include"    
-)
-
 
 # Create an executable
 add_executable(${PROJECT_NAME}
@@ -40,11 +34,32 @@ add_executable(${PROJECT_NAME}
     src/iRastaS.c
     src/cRastaS.c
     src/cRastaS_impl.c
-    src/log.c
-    src/main.c
-    src/test_sm_connection.c
-    src/test.c)
-target_link_libraries(${PROJECT_NAME} rxff rxff_gen cmocka)
+    src/log.c 
+    src/SandboxOperation.c )
+
+option(USE_TEST_CMOCKA "Use the code within the test framework cmocka; cmocka needs to be installed." ON) # ON by default 
+if (USE_TEST_CMOCKA)
+    # cmocka test framework
+    add_library(cmocka SHARED IMPORTED)
+    set_target_properties(cmocka PROPERTIES
+        IMPORTED_LOCATION "/usr/local/lib/libcmocka.dylib"
+        INTERFACE_INCLUDE_DIRECTORIES "/usr/local/include"    
+    )
+
+    target_sources(isc PRIVATE
+        src/test_sm_connection.c 
+        src/test.c )
+    target_link_libraries(${PROJECT_NAME} rxff rxff_gen cmocka)
+
+else()
+    # just main
+    target_sources(isc PRIVATE
+        src/main.c )
+
+    target_link_libraries(${PROJECT_NAME} rxff rxff_gen)
+    
+endif(USE_TEST_CMOCKA)
+unset(USE_TEST_CMOCKA CACHE)
 
 # Include directories
 include_directories(

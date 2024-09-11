@@ -16,8 +16,8 @@
 
 /*## class TopLevel::RXF_EntryPoint */
 /*## operation RXF_EntryPoint_Init() */
-void RXF_EntryPoint_Init(void)
+void RXF_EntryPoint_Init(struct SandboxInstances* instances)
 {
-    RXF_MainTask_start();
+    (void)RXF_MainTask_start(instances);
 }
 

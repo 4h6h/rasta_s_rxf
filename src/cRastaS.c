@@ -7,7 +7,7 @@ static RXFTakeEventStatus rootState_dispatchEvent(void * const void_me, const RX
 static void rootState_handleNotConsumed(RXF_Reactive* const me, RXF_Event* event);
 
 /*## class cDisp */
-void cRastaSOP_Init(cRastaSOP* const me) {
+void cRastaSOP_Init(cRastaSOP* const me, const struct RastaSConfig* const pConfig) {
     static const struct RXF_Reactive_Vtbl cRastaSOP_reactiveVtbl = {
         rootState_dispatchEvent,
         rootState_entDef,
@@ -37,10 +37,8 @@ void cRastaSOP_Init(cRastaSOP* const me) {
     me->p_Interface.inBound._iDisp = &me->_iDisp;
 
     RXF_Reactive_init(&(me->ric_reactive), &cRastaSOP_reactiveVtbl);
-    {
-        me->rootState_subState = cRastaSOP_RiCNonState;
-        me->rootState_active = cRastaSOP_RiCNonState;
-    }
+ 
+    cRastaSOP_Init_impl(me, pConfig);
 
 }
 
@@ -53,8 +51,7 @@ cRastaSOP * cRastaSOP_Create(const struct RastaSConfig* const pConfig) {
     cRastaSOP* me = (cRastaSOP *) RXF_MemoryManager_getMemory(sizeof(cRastaSOP));
     if(me!=NULL)
         {
-            cRastaSOP_Init(me);
-            cRastaSOP_Init_impl(me, pConfig);
+            cRastaSOP_Init(me, pConfig);
         }
     DYNAMICALLY_ALLOCATED(me);
     return me;

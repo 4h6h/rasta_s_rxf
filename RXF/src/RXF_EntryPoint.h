@@ -24,6 +24,7 @@
 /*#]*/
 /***    User explicit entries    ***/
 
+struct SandboxInstances;
 
 /* Operations */
 
@@ -31,6 +32,6 @@
 /** 
  */ 
 /*## operation RXF_EntryPoint_Init() */
-void RXF_EntryPoint_Init(void);
+void RXF_EntryPoint_Init(struct SandboxInstances* instances);
 
 #endif

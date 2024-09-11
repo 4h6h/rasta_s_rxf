@@ -15,6 +15,13 @@ typedef enum {
     LOG_ERROR
 } LogLevel;
 
+static const char *LOG_STRING[] = {
+    "LOG_DEBUG", 
+    "LOG_INFO", 
+    "LOG_WARNING", 
+    "LOG_ERROR",
+};
+
 // #define LOG_LEVEL LOG_DEBUG  /* Set the default log level here */
 LogLevel get_loglevel_filter(void);
 void set_loglevel_filter(LogLevel level);

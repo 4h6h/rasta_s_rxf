@@ -1,18 +1,18 @@
 #ifndef SANDBOX_OPERATION_H
 #define SANDBOX_OPERATION_H
 
-#include "RXF_StandardTypes.h"
-#include "RXF_RhapsodyTypes.h"
-#include "RXF_MemoryManager.h"
-#include "RXF_EventMacros.h"
-#include "RXF_PortMacros.h"
-#include "RXF_Monitor.h"
-
-void SandboxOperation_OMInitializer_Init(void);
-
-void SandboxOperation_initRelations(void);
-
-RiCBoolean SandboxOperation_startBehavior(void);
+/* Forward Declarations */
+struct cDsipOP;
+struct cFecOP;
+struct cRastaSOP;
+struct RastaSConfig;
+struct SandboxInstances {
+    struct cDispOP* itsCDispOP;
+    struct cFecOP* itsCFecOP;
+    struct cRastaSOP* itsCRastaSOP;
+    struct RastaSConfig* rastaConfig;
+};
+typedef struct SandboxInstances SandboxInstances;
 
 void SandboxOperation_Main(void);
 

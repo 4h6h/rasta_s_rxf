@@ -49,8 +49,6 @@ struct cRastaSOP {
     RXF_Reactive ric_reactive;
     struct iFec _iFec;
     struct iDisp _iDisp;
-    enum cRastaSOP_Enum rootState_subState;
-    enum cRastaSOP_Enum rootState_active;
     cRastaSOP_p_Interface p_Interface;  
 };
 
@@ -58,7 +56,7 @@ struct cRastaSOP {
 
 /* Constructors and destructors:*/
 
-void cRastaSOP_Init(cRastaSOP* const me);
+void cRastaSOP_Init(cRastaSOP* const me, const struct RastaSConfig* const pConfig);
 
 void cRastaSOP_Cleanup(cRastaSOP* const me);
 
