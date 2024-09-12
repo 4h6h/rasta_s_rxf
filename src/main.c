@@ -57,6 +57,10 @@ typedef struct {
 
 static IscMessage messages[] = {
     {
+        .isc_message_source = MSG_FROM_TIMER,
+        .ptr_to_payload = (void *)&from_timer_timing_message,
+    },
+    {
         .isc_message_source = MSG_FROM_RASTA_R,
         .ptr_to_payload = (void *)&from_rasta_r_heartbeat_message,
     },
@@ -113,8 +117,9 @@ int main(int argc, char** argv) {
             case MSG_FROM_TIMER:
             {
                 /* process one timer message to process real time value */
+                /* realtime =  { 0x5A, 0x5A, 0x5A, 0x5A }; */
                 
-                /* process main functions ? */
+                /* process all main functions ? */
                 cFecOP_Main(&itsCFecOP);
                 
                 /* process RXF step - one tick */
