@@ -100,3 +100,33 @@ StdRet_t cRastaSOP_CloseConnection_impl(cRastaSOP* const me, const ConnId_t conn
     
     return resultValue;
 };
+
+
+StdRet_t cRastaSOP_ReceiveSpdu_impl(cRastaSOP* const me, const ConnId_t conn_id, SpduLen_t spduLen, const uint8_t* const pSpduData) {
+
+    StdRet_t resultValue = OK;
+
+    assert(me != NULL);
+    assert(spduLen > 0);
+    assert(pSpduData != NULL);
+
+    uint16_t message_type = (uint16_t)((pSpduData[2]<<8) | pSpduData[3]);
+
+    switch (message_type) {
+        case MSGT_HEARTBEAT:
+        {
+            RXF_SM_Event_gen(&(me->ric_reactive), conn_id, EVENT_RECV_HB);
+            break;
+        }
+        /*
+        case MSGT_CONNECTION_REQUEST:
+        ...
+        */
+        default:
+            /* Never get here */
+            assert(0);
+            break;
+    }  
+    
+    return resultValue;
+};

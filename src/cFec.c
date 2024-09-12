@@ -94,11 +94,14 @@ void cFecOP_p_Interface_connectOutBound(cFecOP* const me, iFec* const p_iFec) {
 
 
 
-
+static bool initialized = false;
 void cFecOP_Main(cFecOP* const me) {
-
-    // Rass_CloseConnection(OPORT(cFecOP, p_Interface, iFec), 0);
-    // Rass_OpenConnection(OPORT(cFecOP, p_Interface, iFec), 0);
+    /* it is just an example */
+    if (!initialized)
+    {
+        Rass_OpenConnection(OPORT(cFecOP, p_Interface, iFec), 0);
+        initialized = true;
+    }
 
 #if 0
     RastaSConn connState;

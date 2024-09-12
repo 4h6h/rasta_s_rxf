@@ -95,9 +95,7 @@ StdRet_t cRastaSOP_SendData(cRastaSOP* const me, const ConnId_t connId, MsgLen_t
 };
 
 StdRet_t cRastaSOP_ReceiveSpdu(cRastaSOP* const me, const ConnId_t connId, SpduLen_t spduLen, const uint8_t* const pSpduData) {
-    StdRet_t returnValue = OK;
-
-    return returnValue;
+    return cRastaSOP_ReceiveSpdu_impl(me, connId, spduLen, pSpduData);
 };
 
 
