@@ -13,12 +13,12 @@ void cFecOP_Init(cFecOP* const me) {
         rootState_handleNotConsumed,
     };
 
-    static const struct iRastaS_Fec_Vtbl cFecOP_iRastaSFec_Vtbl_Values = {
+    static const struct iRastaS_Fec_Vtbl cFecOP_iRastaS_Vtbl_Values = {
         (StdRet_t (*)(struct iRastaSFec* const me, const ConnId_t connId, const MsgLen_t msgLen, const uint8_t* const pMsgData)) cFecOP_ReceiveMsg,
         (StdRet_t (*)(struct iRastaSFec* const me, const ConnId_t connId, const struct RastaSConn* const state)) cFecOP_ConnStateNotification,
     };
 
-    static const struct iDisp_Fec_Vtbl cFecOP_iDispFec_Vtbl_Values = {
+    static const struct iDisp_Fec_Vtbl cFecOP_iDisp_Vtbl_Values = {
         (void (*)(struct iDispFec* const me)) cFecOP_Main,
     };
     
@@ -28,8 +28,8 @@ void cFecOP_Init(cFecOP* const me) {
     me->_DispFec.realMe = (iDispFec*)me;
 
     /* #MISRA_11.3,11.5=ON */
-    me->_RastaSFec.iRastaSFecVtbl = &cFecOP_iRastaSFec_Vtbl_Values;
-    me->_DispFec.iDispFecVtbl = &cFecOP_iDispFec_Vtbl_Values;
+    me->_RastaSFec.iRastaSFecVtbl = &cFecOP_iRastaS_Vtbl_Values;
+    me->_DispFec.iDispFecVtbl = &cFecOP_iDisp_Vtbl_Values;
 
     me->p_Interface.inBound._iRastaS = &me->_RastaSFec;
     me->p_Interface.inBound._iDisp = &me->_DispFec;

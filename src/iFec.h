@@ -17,17 +17,17 @@ struct RastaSConn {
 typedef struct RastaSConn RastaSConn;
 
 
-typedef struct iFec_Vtbl {
+typedef struct iFec_RastaS_Vtbl {
     StdRet_t (*fp_iRastaS_OpenConnection)(struct iFec* const me, const ConnId_t connId);
     StdRet_t (*fp_iRastaS_CloseConnection)(struct iFec* const me, const ConnId_t connId);
     StdRet_t (*fp_iRastaS_ConnectionStateRequest)(struct iFec* const me, const ConnId_t connId, struct RastaSConn* const state);   
     StdRet_t (*fp_iRastaS_SendData)(struct iFec* const me, const ConnId_t connId, const MsgLen_t msgLen, const uint8_t* const pMsgData); 
-} iFec_Vtbl;
+} iFec_RastaS_Vtbl;
 
 /*## class iFec */
 typedef struct iFec iFec;
 struct iFec {
-    const iFec_Vtbl * iFecVtbl;
+    const iFec_RastaS_Vtbl * iFecVtbl;
     iFec* realMe;
 };
 

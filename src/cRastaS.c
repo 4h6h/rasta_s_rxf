@@ -14,7 +14,7 @@ void cRastaSOP_Init(cRastaSOP* const me, const struct RastaSConfig* const pConfi
         rootState_handleNotConsumed,
     };
 
-    static const struct iFec_Vtbl cRastaSOP_iFec_Vtbl_Values = {
+    static const struct iFec_RastaS_Vtbl cRastaSOP_iFec_Vtbl_Values = {
         (StdRet_t (*)(iFec* const me, const ConnId_t connId)) cRastaSOP_OpenConnection,
         (StdRet_t (*)(iFec* const me, const ConnId_t connId)) cRastaSOP_CloseConnection,
         (StdRet_t (*)(iFec* const me, const ConnId_t connId, struct RastaSConn* const state)) cRastaSOP_ConnectionStateRequest,
