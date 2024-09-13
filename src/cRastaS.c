@@ -20,21 +20,22 @@ void cRastaSOP_Init(cRastaSOP* const me, const struct RastaSConfig* const pConfi
         (StdRet_t (*)(iFec* const me, const ConnId_t connId, struct RastaSConn* const state)) cRastaSOP_ConnectionStateRequest,
         (StdRet_t (*)(iFec* const me, const ConnId_t connId, const MsgLen_t msgLen, const uint8_t* const pMsgData)) cRastaSOP_SendData,
     };
-    static const struct iDisp_Vtbl cRastaSOP_iDisp_Vtbl_Values = {
-        (StdRet_t (*)(iDisp* const me, const ConnId_t connId, const SpduLen_t spduLen, const uint8_t* const pSpduData)) cRastaSOP_ReceiveSpdu,
+    static const struct iDisp_RastaS_Vtbl cRastaSOP_iDisp_Vtbl_Values = {
+        (StdRet_t (*)(iDispRastaS* const me, const ConnId_t connId, const SpduLen_t spduLen, const uint8_t* const pSpduData)) cRastaSOP_ReceiveSpdu,
+        (void (*)(iDispRastaS* const me)) cRastaSOP_Main,
     };
 
     /* Initilize interface iPing. */
     /* #MISRA_11.3,11.5=OFF XD-0000: cast from specific class type to generic Interface type */
     me->_iFec.realMe = (iFec*)me;
-    me->_iDisp.realMe = (iDisp*)me;
+    me->_iDispRastaS.realMe = (iDispRastaS*)me;
     
     /* #MISRA_11.3,11.5=ON */
     me->_iFec.iFecVtbl = &cRastaSOP_iFec_Vtbl_Values;
-    me->_iDisp.iDispVtbl = &cRastaSOP_iDisp_Vtbl_Values;
+    me->_iDispRastaS.iDispRastaSVtbl = &cRastaSOP_iDisp_Vtbl_Values;
     
     me->p_Interface.inBound._iFec = &me->_iFec;
-    me->p_Interface.inBound._iDisp = &me->_iDisp;
+    me->p_Interface.inBound._iDisp = &me->_iDispRastaS;
 
     RXF_Reactive_init(&(me->ric_reactive), &cRastaSOP_reactiveVtbl);
  
@@ -132,6 +133,8 @@ static void rootState_handleNotConsumed(RXF_Reactive* const me, RXF_Event* event
 
 static bool is_initialized = false;
 void cRastaSOP_Main(cRastaSOP* const me) {
+
+    LOG_INFO("cRastaSOP_Main");
 #if 0
     RastaSConn connState;
     uint8_t spdu[32] = { 0 };

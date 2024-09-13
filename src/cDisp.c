@@ -71,12 +71,21 @@ StdRet_t cDispOP_SendSpdu(cDispOP* const me, const ConnId_t connId, const SpduLe
 }
 
 
-void cDispOP_p_Interface_connectOutBound(cDispOP* const me, iDisp* const p_iDisp) {
-    if( NULL != p_iDisp )
+void cDispOP_p_Interface_connectOutBound_RastaS(cDispOP* const me, iDispRastaS* const p_iDispRastaS) {
+    if( NULL != p_iDispRastaS )
     {
-    	me->p_Interface.outBound._iDisp = p_iDisp;
+    	me->p_Interface.outBound._iDispRastaS = p_iDispRastaS;
     }
 }
 
-void cDispOP_Main(cDispOP* const me) {
+void cDispOP_p_Interface_connectOutBound_Fec(cDispOP* const me, iDispFec* const p_iDispFec) {
+    if( NULL != p_iDispFec )
+    {
+    	me->p_Interface.outBound._iDispFec = p_iDispFec;
+    }
+}
+
+
+void cDispOP_Main(cDispOP* const me) 
+{
 }

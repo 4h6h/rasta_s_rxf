@@ -14,6 +14,7 @@
 #include "RXF_Event.h"
 
 #include "iFec.h"
+#include "iDisp.h"
 #include "iRastaS.h"
 
 
@@ -29,6 +30,7 @@ typedef struct {
 /*## Port p_Interface_in inBound declaration. */
 typedef struct {
     iRastaSFec* _iRastaS;
+    iDispFec* _iDisp;
 } cFecOP_p_Interface_in;
 
 /*## Port p_Interface declaration. */
@@ -40,6 +42,7 @@ typedef struct {
 struct cFecOP {
     RXF_Reactive ric_reactive; 
     struct iRastaSFec _RastaSFec;
+    struct iDispFec _DispFec;
     cFecOP_p_Interface p_Interface;
 };
 

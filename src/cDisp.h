@@ -22,7 +22,8 @@ typedef struct cDispOP cDispOP;
 
 /*## Port p_Interface_out outBound declaration. */
 typedef struct {
-    iDisp* _iDisp;
+    iDispRastaS* _iDispRastaS;
+    iDispFec* _iDispFec;
 } cDispOP_p_Interface_out;
 
 /*## Port p_Interface_in inBound declaration. */
@@ -68,6 +69,7 @@ void cDispOP_Destroy(cDispOP* const me);
 
 /***    Framework entries    ***/
 
-void cDispOP_p_Interface_connectOutBound(cDispOP* const me, iDisp* const p_iDisp);
+void cDispOP_p_Interface_connectOutBound_RastaS(cDispOP* const me, iDispRastaS* const p_iDisp);
+void cDispOP_p_Interface_connectOutBound_Fec(cDispOP* const me, iDispFec* const p_iDisp);
 
 #endif /* cDispOP.h */

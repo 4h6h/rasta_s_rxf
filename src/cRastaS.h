@@ -36,7 +36,7 @@ typedef struct {
 /*## Port p_Interface_in inBound declaration. */
 typedef struct {
     iFec* _iFec;    
-    iDisp* _iDisp;
+    iDispRastaS* _iDisp;
 } cRastaSOP_p_Interface_in;
 
 /*## Port p_Interface declaration. */
@@ -48,7 +48,7 @@ typedef struct {
 struct cRastaSOP {
     RXF_Reactive ric_reactive;
     struct iFec _iFec;
-    struct iDisp _iDisp;
+    struct iDispRastaS _iDispRastaS;
     cRastaSOP_p_Interface p_Interface;  
 };
 
@@ -85,13 +85,5 @@ void cRastaSOP_Destroy(cRastaSOP* const me);
 void cRastaSOP_p_Interface_connectOutBound_Fec(cRastaSOP* const me, iRastaSFec* const p_iRastaS);
 void cRastaSOP_p_Interface_connectOutBound_Disp(cRastaSOP* const me, iRastaSDisp* const p_iRastaS);
 
-
-/* S_WAITING_FOR_PING: */
-#define cRastaSOP_S_WAITING_FOR_PING_IN(me)    \
-    ((me)->rootState_subState == cRastaSOP_S_WAITING_FOR_PING)
-
-/* S_DELAYING_PONG: */
-#define cRastaSOP_S_DELAYING_PONG_IN(me)    \
-    ((me)->rootState_subState == cRastaSOP_S_DELAYING_PONG)
 
 #endif /* cRastaSOP_H */

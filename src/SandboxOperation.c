@@ -19,7 +19,10 @@ static void SandboxOperation_initRelations(void) {
     cRastaSOP_Init(itsCRastaSOP, rastaConfig);
 
     cFecOP_p_Interface_connectOutBound( itsCFecOP, itsCRastaSOP->p_Interface.inBound._iFec );
-    cDispOP_p_Interface_connectOutBound( itsCDispOP, itsCRastaSOP->p_Interface.inBound._iDisp );
+
+    cDispOP_p_Interface_connectOutBound_RastaS( itsCDispOP, itsCRastaSOP->p_Interface.inBound._iDisp);
+    cDispOP_p_Interface_connectOutBound_Fec( itsCDispOP, itsCFecOP->p_Interface.inBound._iDisp );
+    
     cRastaSOP_p_Interface_connectOutBound_Fec( itsCRastaSOP, itsCFecOP->p_Interface.inBound._iRastaS );
     cRastaSOP_p_Interface_connectOutBound_Disp( itsCRastaSOP, itsCDispOP->p_Interface.inBound._iRastaSDisp );
 }

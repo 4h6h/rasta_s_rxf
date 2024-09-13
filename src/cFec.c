@@ -17,14 +17,23 @@ void cFecOP_Init(cFecOP* const me) {
         (StdRet_t (*)(struct iRastaSFec* const me, const ConnId_t connId, const MsgLen_t msgLen, const uint8_t* const pMsgData)) cFecOP_ReceiveMsg,
         (StdRet_t (*)(struct iRastaSFec* const me, const ConnId_t connId, const struct RastaSConn* const state)) cFecOP_ConnStateNotification,
     };
-    
+
+    static const struct iDisp_Fec_Vtbl cFecOP_iDispFec_Vtbl_Values = {
+        (void (*)(struct iDispFec* const me)) cFecOP_Main,
+    };
     
     /* Initilize interface iPing. */
     /* #MISRA_11.3,11.5=OFF XD-0000: cast from specific class type to generic Interface type */
     me->_RastaSFec.realMe = (iRastaSFec*)me;
+    me->_DispFec.realMe = (iDispFec*)me;
+
     /* #MISRA_11.3,11.5=ON */
     me->_RastaSFec.iRastaSFecVtbl = &cFecOP_iRastaSFec_Vtbl_Values;
+    me->_DispFec.iDispFecVtbl = &cFecOP_iDispFec_Vtbl_Values;
+
     me->p_Interface.inBound._iRastaS = &me->_RastaSFec;
+    me->p_Interface.inBound._iDisp = &me->_DispFec;
+
     RXF_Reactive_init(&(me->ric_reactive), &cFecSOP_reactiveVtbl);
 
 }
@@ -96,6 +105,9 @@ void cFecOP_p_Interface_connectOutBound(cFecOP* const me, iFec* const p_iFec) {
 
 static bool initialized = false;
 void cFecOP_Main(cFecOP* const me) {
+
+    LOG_INFO("cFecOP_Main");
+
     /* it is just an example */
     if (!initialized)
     {

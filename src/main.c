@@ -106,7 +106,7 @@ int main(int argc, char** argv) {
             case MSG_FROM_RASTA_R:
             {
                 LOG_INFO("Message size %lu", HEARTBEAT_MESSAGE_SIZE);
-                Rass_ReceiveSpdu(itsCDispOP.p_Interface.outBound._iDisp, 0, HEARTBEAT_MESSAGE_SIZE, messages[cycle].ptr_to_payload);
+                Rass_ReceiveSpdu(itsCDispOP.p_Interface.outBound._iDispRastaS, 0, HEARTBEAT_MESSAGE_SIZE, messages[cycle].ptr_to_payload);
                 break;
             }
             case MSG_FROM_ISC_X:
@@ -119,8 +119,9 @@ int main(int argc, char** argv) {
                 /* process one timer message to process real time value */
                 /* realtime =  { 0x5A, 0x5A, 0x5A, 0x5A }; */
                 
-                /* process all main functions ? */
-                cFecOP_Main(&itsCFecOP);
+                /* process all main functions ? in a specific order ? */
+                Rass_Main(itsCDispOP.p_Interface.outBound._iDispRastaS);
+                Fec_Main(itsCDispOP.p_Interface.outBound._iDispFec);
                 
                 /* process RXF step - one tick */
                 SandboxOperation_Main();
