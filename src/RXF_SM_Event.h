@@ -27,10 +27,12 @@ struct RXF_SM_Event {
     ConnId_t conn_id;
 
     Event sm_event;
+
+    PDU_S* pdu;
 };
 typedef struct RXF_SM_Event RXF_SM_Event;
 
-void RXF_SM_Init(void);
-void RXF_SM_Event_gen(RXF_Reactive* dest, ConnId_t conn_id, Event event);
+void RXF_SM_Event_gen(const RXF_Reactive* const dest, const ConnId_t conn_id, const Event event, const PDU_S* const pdu);
+void RXF_SM_Event_free(const RXF_SM_Event* const ev);
 
 #endif /* RXF_SM_EVENT_H */

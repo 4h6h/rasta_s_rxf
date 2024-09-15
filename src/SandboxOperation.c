@@ -12,7 +12,6 @@ static cDispOP* itsCDispOP;
 static cRastaSOP* itsCRastaSOP;
 static RastaSConfig* rastaConfig;
 
-#if 1
 static void SandboxOperation_initRelations(void) {
     cFecOP_Init(itsCFecOP);
     cDispOP_Init(itsCDispOP);
@@ -34,8 +33,6 @@ static RiCBoolean SandboxOperation_startBehavior(void) {
     done = cRastaSOP_startBehavior(itsCRastaSOP) && done;
     return done;
 }
-
-#endif 
 
 static void SandboxOperation_OMInitializer_Init(void) {
     SandboxOperation_initRelations();

@@ -16,7 +16,7 @@ static SmType* sms = NULL;
 RXFTakeEventStatus rootState_dispatchEvent_impl(void* const void_me, const RXFEventId id) {
 
     RXFTakeEventStatus res = eventNotConsumed;
-    cRastaSOP * const me = (cRastaSOP *)void_me;
+    cRastaSOP* const me = (cRastaSOP *)void_me;
     
     LOG_INFO("rootState_dispatchEvent_impl: %i", id);
 
@@ -37,11 +37,13 @@ RXFTakeEventStatus rootState_dispatchEvent_impl(void* const void_me, const RXFEv
             RXF_SM_Event* ev = (RXF_SM_Event*)me->ric_reactive.current_event;
             ConnId_t conn_id = (ConnId_t)((RXF_SM_Event*)ev)->conn_id;
             Event sm_event = ((RXF_SM_Event*)ev)->sm_event;
+            PDU_S* pdu = ((RXF_SM_Event*)ev)->pdu;
 
             LOG_INFO("rootState_dispatchEvent_impl RXF_Event_sm_id conn_id: %u sm_event: %u", conn_id, sm_event);
 
-            PDU_S pdu = { 0 };
-            Sm_HandleEvent(&sms[conn_id], sm_event, &pdu);
+            Sm_HandleEvent(&sms[conn_id], sm_event, pdu);
+
+            RXF_SM_Event_free(ev);
         
             res = eventConsumed;
             break;
@@ -63,8 +65,6 @@ void cRastaSOP_Init_impl(cRastaSOP* const me, const struct RastaSConfig* const p
     /* Implementation specific to SafeCom_Init */
     LOG_INFO("init module %s in role %i", pConfig ->instname, pConfig->role);
 
-    RXF_SM_Init();
-
     sms = pConfig->sms;
 
     for (int i=0; i<pConfig->max_connections; i++) {
@@ -82,7 +82,7 @@ StdRet_t cRastaSOP_OpenConnection_impl(cRastaSOP* const me, const ConnId_t conn_
 
     assert(me != NULL);
 
-    RXF_SM_Event_gen(&(me->ric_reactive), conn_id, EVENT_OPEN_CONN);
+    RXF_SM_Event_gen(&(me->ric_reactive), conn_id, EVENT_OPEN_CONN, NULL);
 
     RXF_TimerManager_start(10, 42, &(me->ric_reactive));
 
@@ -96,7 +96,7 @@ StdRet_t cRastaSOP_CloseConnection_impl(cRastaSOP* const me, const ConnId_t conn
 
     assert(me != NULL);
 
-    RXF_SM_Event_gen(&(me->ric_reactive), conn_id, EVENT_CLOSE_CONN);    
+    RXF_SM_Event_gen(&(me->ric_reactive), conn_id, EVENT_CLOSE_CONN, NULL);    
     
     return resultValue;
 };
@@ -115,7 +115,7 @@ StdRet_t cRastaSOP_ReceiveSpdu_impl(cRastaSOP* const me, const ConnId_t conn_id,
     switch (message_type) {
         case MSGT_HEARTBEAT:
         {
-            RXF_SM_Event_gen(&(me->ric_reactive), conn_id, EVENT_RECV_HB);
+            RXF_SM_Event_gen(&(me->ric_reactive), conn_id, EVENT_RECV_HB, (PDU_S*)pSpduData);
             break;
         }
         /*
