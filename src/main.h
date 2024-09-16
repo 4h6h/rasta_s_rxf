@@ -15,8 +15,6 @@
 
 /* Operations */
 
-int32_t RXF_MainTask_start(void);
-
 /*## operation main(int,char**) */
 int main(int argc, char** argv);
 
