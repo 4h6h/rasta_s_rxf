@@ -1,7 +1,14 @@
 cmake_minimum_required(VERSION 3.10)
+option(USE_CFG_SERVER "Use RastaS_Lcfg_client else RastaS_Lcfg_server." OFF) # OFF by default
+option(USE_TEST_CMOCKA "Use the code within the test framework cmocka; cmocka needs to be installed." ON) # ON by default 
 
 # Project name
-project(isc C)
+if(USE_CFG_SERVER)
+    project(isc_server C)
+else()
+    project(isc_client C)
+endif(USE_CFG_SERVER)
+
 
 # Specify the C standard
 set(CMAKE_C_STANDARD 99)
@@ -30,15 +37,21 @@ add_executable(${PROJECT_NAME}
     src/cFec.c
     src/iDisp.c
     src/cDisp.c
-    src/RastaS_Lcfg.c
     src/iRastaS.c
     src/cRastaS.c
     src/cRastaS_impl.c
     src/log.c 
     src/SandboxOperation.c )
 
-option(USE_TEST_CMOCKA "Use the code within the test framework cmocka; cmocka needs to be installed." ON) # ON by default 
-if (USE_TEST_CMOCKA)
+if(USE_CFG_SERVER)
+    target_sources(${PROJECT_NAME} PRIVATE 
+        src/RastaS_Lcfg_server.c )
+else()
+    target_sources(${PROJECT_NAME} PRIVATE 
+        src/RastaS_Lcfg_client.c )
+endif(USE_CFG_SERVER)
+
+if(USE_TEST_CMOCKA)
     # cmocka test framework
     add_library(cmocka SHARED IMPORTED)
     set_target_properties(cmocka PROPERTIES
@@ -46,14 +59,14 @@ if (USE_TEST_CMOCKA)
         INTERFACE_INCLUDE_DIRECTORIES "/usr/local/include"    
     )
 
-    target_sources(isc PRIVATE
+    target_sources(${PROJECT_NAME} PRIVATE
         src/test_sm_connection.c 
         src/test.c )
     target_link_libraries(${PROJECT_NAME} rxff rxff_gen cmocka)
 
 else()
     # just main
-    target_sources(isc PRIVATE
+    target_sources(${PROJECT_NAME} PRIVATE
         src/main.c )
 
     target_link_libraries(${PROJECT_NAME} rxff rxff_gen)

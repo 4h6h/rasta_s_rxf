@@ -25,17 +25,17 @@ static cFecOP itsCFecOP;
 static cDispOP itsCDispOP;
 static cRastaSOP itsCRastaSOP;
 
-extern RastaSConfig rastaConfig_client;
+extern RastaSConfig rastaConfig;
 
 static void test_sm_client_open(void** state)
 {
     uint32_t cycles = CYCLES;
-    rastaConfig_client.sms = sms;
+    rastaConfig.sms = sms;
     SandboxInstances instances = {
         .itsCFecOP = &itsCFecOP,
         .itsCDispOP = &itsCDispOP,
         .itsCRastaSOP = &itsCRastaSOP,
-        .rastaConfig = &rastaConfig_client,
+        .rastaConfig = &rastaConfig,
     };
 
     RXF_EntryPoint_Init(&instances);

@@ -78,8 +78,7 @@ static SmType sms[MAX_CONNECTIONS] = { 0 };
 static cDispOP istCDispOP;
 static cFecOP itsCFecOP;
 static cRastaSOP itsCRastaSOP;
-extern RastaSConfig rastaConfig_client;
-
+extern RastaSConfig rastaConfig;
 
 
 /*## class cDisp */
@@ -169,12 +168,12 @@ void cDispOP_p_Interface_connectOutBound_Fec(cDispOP* const me, iDispFec* const 
 
 
 int32_t modelMain(void) {
-    rastaConfig_client.sms = sms;
+    rastaConfig.sms = sms;
     SandboxInstances instances = {
         .itsCDispOP = &istCDispOP,
         .itsCFecOP = &itsCFecOP,
         .itsCRastaSOP = &itsCRastaSOP,
-        .rastaConfig = &rastaConfig_client,
+        .rastaConfig = &rastaConfig,
     };
 
     RXF_EntryPoint_Init(&instances);

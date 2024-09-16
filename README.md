@@ -16,7 +16,7 @@ make
 ### Execute:
 ```
 cd build  
-./isc  
+./isc_client
 ```
 
 ## Running it standalone
@@ -32,7 +32,41 @@ make
 ### Execute:
 ````
 cd build
-./isc
+./isc_client
 ````
+
+## Running it as client or server
+
+### Build as client: 
+Configuration in RastaS_Lcfg_client.c
+
+```
+mkdir build
+cd build
+cmake "../" -D"CMAKE_BUILD_TYPE=Debug" -D"USE_TEST_CMOCKA=OFF"
+make
+```
+
+### Execute as client
+```
+cd build
+./isc_client
+```
+
+### Build as server
+Configuration in RastaS_Lcfg_server.c
+
+```
+mkdir build
+cd build
+cmake "../" -D"CMAKE_BUILD_TYPE=Debug" -D"USE_TEST_CMOCKA=OFF" -D"USE_CFG_SERVER=ON"
+make
+```
+
+### Execute as server
+```
+cd build
+./isc_server
+```
 
 

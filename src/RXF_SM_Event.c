@@ -11,7 +11,7 @@
 
 extern RXF_EventQueue mainMSQ;
 
-void RXF_SM_Event_gen(const RXF_Reactive* const dest, const ConnId_t conn_id, const Event event, const PDU_S* const pdu) {
+void RXF_SM_Event_gen(RXF_Reactive* const dest, const ConnId_t conn_id, const Event event, PDU_S* const pdu) {
 
     RXF_SM_Event* me = (RXF_SM_Event*) RXF_MemoryManager_getMemory(sizeof(RXF_SM_Event));
     if(me!=NULL)
