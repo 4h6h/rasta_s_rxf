@@ -7,6 +7,8 @@
 #define INSTNAME_LENGTH 10U
 #define MAX_CONNECTIONS 1U
 
+#define CYCLE_TICKS     10U
+
 struct RastaSConfig {
     uint8_t instname[INSTNAME_LENGTH];
     SmRole role;

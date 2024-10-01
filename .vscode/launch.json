@@ -2,18 +2,34 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(lldb) Starten",
+            "name": "(lldb) Client",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/isc",
+            "program": "${workspaceFolder}/build_client/isc_client",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
             "externalConsole": false,
-            "MIMode": "lldb"
+            "linux": {
+                "MIMode": "gdb",
+                "miDebuggerPath": "gdb",
+            },
         },
         {
+            "name": "(lldb) Server",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build_server/isc_server",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "linux": {
+                "MIMode": "gdb",
+                "miDebuggerPath": "gdb",
+            },
         },
     ]
 }

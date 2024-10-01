@@ -71,6 +71,10 @@ StdRet_t cFecOP_ReceiveMsg(cFecOP* const me, const ConnId_t connId, const MsgLen
 StdRet_t cFecOP_ConnStateNotification(cFecOP* const me, ConnId_t connId, const struct RastaSConn* const state) {
     StdRet_t returnValue = OK;
 
+    LOG_INFO("cFecOP_ConnStateNotification %u %u %u", connId, state->old, state->new);
+
+    RXF_MemoryManager_returnMemory((void *)state);
+
     return returnValue;
 }
 

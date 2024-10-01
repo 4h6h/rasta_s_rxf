@@ -5,7 +5,7 @@ _*
 .DS_*
 
 # build folder
-build/*
+build*/*
 release/*
 debug/*
 

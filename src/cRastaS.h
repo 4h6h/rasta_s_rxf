@@ -49,7 +49,8 @@ struct cRastaSOP {
     RXF_Reactive ric_reactive;
     struct iFec _iFec;
     struct iDispRastaS _iDispRastaS;
-    cRastaSOP_p_Interface p_Interface;  
+    cRastaSOP_p_Interface p_Interface;
+    SmType* sms;
 };
 
 /***    User implicit entries    ***/

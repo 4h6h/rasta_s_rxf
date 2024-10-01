@@ -189,10 +189,10 @@ void serialize_pdu(PDU_S *pdu, uint8_t *buffer, const size_t buffer_size)
 }
 
 /* Deserialize data in to the PDU structure from a buffer with serialized data */
-void deserialize_pdu(uint8_t *buffer, const size_t buffer_size, PDU_S *pdu) 
+void deserialize_pdu(const uint8_t* const buffer, const size_t buffer_size, PDU_S* const pdu) 
 {
     assert(buffer != NULL);
-    assert(pdu != NULL);
+    /* assert(pdu != NULL); */
 
     if (buffer_size < PDU_FIXED_FIELDS_LENGTH) {
         return;

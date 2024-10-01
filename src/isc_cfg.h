@@ -3,7 +3,15 @@
 
 #include "log.h"
 
-#define CYCLES 5U
-#define LOG_LEVEL LOG_DEBUG 
+#define LOG_LEVEL LOG_DEBUG
+
+#define SERVER_SIMULATION
+#undef SERVER_SIMULATION
+
+typedef struct ip_table 
+{
+    const char *ip;
+    const ConnId_t conn_id;
+} ip_table;
 
 #endif /* ISC_CFG_H */

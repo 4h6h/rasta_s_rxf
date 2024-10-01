@@ -8,12 +8,12 @@ static void set_initial_attributes(SmType* const self);
 static void close_connection(SmType* const self);
 static void process_regular_receipt(SmType* const self);
 
-static void handle_closed(SmType* const self, const Event event, PDU_S* const recv_pdu);
-static void handle_down(SmType* const self, const Event event, PDU_S* const recv_pdu);
-static void handle_start(SmType* const self, const Event event, PDU_S* const recv_pdu);
-static void handle_up(SmType* const self, const Event event, PDU_S* const recv_pdu);
-static void handle_retr_req(SmType* const self, const Event event, PDU_S* const recv_pdu);
-static void handle_retr_run(SmType* const self, const Event event, PDU_S* const recv_pdu);
+static void handle_closed(SmType* const self, const Event event, PDU_S* const pdu);
+static void handle_down(SmType* const self, const Event event, PDU_S* const pdu);
+static void handle_start(SmType* const self, const Event event, PDU_S* const pdu);
+static void handle_up(SmType* const self, const Event event, PDU_S* const pdu);
+static void handle_retr_req(SmType* const self, const Event event, PDU_S* const pdu);
+static void handle_retr_run(SmType* const self, const Event event, PDU_S* const pdu);
 
 static bool check_seq_confirmed_timestamp(SmType* const self);
 static bool check_version(PDU_S* const recv_pdu);
@@ -81,12 +81,11 @@ static void process_regular_receipt(SmType* const self)
     self->ctsr = self->cspdu;
 }
 
-static void handle_closed(SmType* const self, const Event event, PDU_S* const recv_pdu)
+static void handle_closed(SmType* const self, const Event event, PDU_S* const pdu)
 {
     assert(self != NULL);
-    UNUSED(recv_pdu);
 
-    PDU_S pdu_to_send = { 0 };
+    pdu->message_length = 0;
 
     switch (event) {
         case EVENT_OPEN_CONN:
@@ -94,6 +93,7 @@ static void handle_closed(SmType* const self, const Event event, PDU_S* const re
             {
                 self->snt = rand(); /* Random value for SNT */
                 self->state = STATE_DOWN;
+                pdu->message_length = 0;
             }
             else if(self->role == ROLE_CLIENT)
             {
@@ -101,6 +101,7 @@ static void handle_closed(SmType* const self, const Event event, PDU_S* const re
                 self->cst = 0U;
                 self->ctsr = 0U; /* TODO: RTR - Tlocal */
 
+                conn_req_pdu(pdu);
                 // pdu_to_send = ConnReq(self);
                 /* TODO: RTR - Send ConnReq */
 
@@ -113,11 +114,11 @@ static void handle_closed(SmType* const self, const Event event, PDU_S* const re
     }
 }
 
-static void handle_down(SmType* const self, const Event event, PDU_S* const recv_pdu)
+static void handle_down(SmType* const self, const Event event, PDU_S* const pdu)
 {
     assert(self != NULL);
 
-    PDU_S pdu_to_send = { 0 };
+    pdu->message_length = 0;
     
     switch (event) {
         case EVENT_OPEN_CONN:
@@ -127,12 +128,13 @@ static void handle_down(SmType* const self, const Event event, PDU_S* const recv
             break;
 
         case EVENT_RECV_CONN_REQ:
-            if (check_version(recv_pdu)) 
+            if (check_version(pdu)) 
             {
                 self->csr = self->snt - 1;
                 self->ctsr = 0; /* TODO: RTR - Tlocal */
                 self->state = STATE_START;
 
+                conn_resp_pdu(pdu);
                 // pdu_to_send = ConnResp(self);
                 /* TODO: RTR - Send ConnResp */
             }
@@ -150,11 +152,11 @@ static void handle_down(SmType* const self, const Event event, PDU_S* const recv
     }
 }
 
-static void handle_start(SmType* const self, const Event event, PDU_S* const recv_pdu)
+static void handle_start(SmType* const self, const Event event, PDU_S* const pdu)
 {
     assert(self != NULL);
 
-    PDU_S pdu_to_send = { 0 };
+    pdu->message_length = 0;
 
     switch (event) {
         case EVENT_OPEN_CONN:
@@ -194,10 +196,11 @@ static void handle_start(SmType* const self, const Event event, PDU_S* const rec
             }
             else if (self->role == ROLE_CLIENT)
             {
-                if (check_version(recv_pdu)) 
+                if (check_version(pdu)) 
                 {
                     self->state = STATE_UP;
 
+                    hb_pdu(pdu);
                     // pdu_to_send = HB(self);
                     /* TODO: RTR - Send HB */
                 }
@@ -221,6 +224,7 @@ static void handle_start(SmType* const self, const Event event, PDU_S* const rec
                     /* Checking the sequence number SNinSeq == true */
                     if (self->snr == self->snpdu)
                     {
+                        LOG_INFO("sequence number true %u %u", self->snr, self->snpdu);
                         /* Checking the Sequence of the Confirmed Timestamps CTSinSeq == true */
                         if (check_seq_confirmed_timestamp(self))
                         {
@@ -229,6 +233,7 @@ static void handle_start(SmType* const self, const Event event, PDU_S* const rec
                         }
                         else
                         {
+                            LOG_INFO("sequence number false %u %u", self->snr, self->snpdu);
                             close_connection(self);
 
                             // pdu_to_send = DiscReq(8, NO_DETAILED_REASON, self);
@@ -258,12 +263,11 @@ static void handle_start(SmType* const self, const Event event, PDU_S* const rec
     }
 }
 
-static void handle_up(SmType* const self, const Event event, PDU_S* const recv_pdu)
+static void handle_up(SmType* const self, const Event event, PDU_S* const pdu)
 {
     assert(self != NULL);
-    UNUSED(recv_pdu);
     
-    PDU_S pdu_to_send = { 0 };
+    pdu->message_length = 0;
 
     switch (event) {
         case EVENT_OPEN_CONN:
@@ -342,10 +346,12 @@ static void handle_up(SmType* const self, const Event event, PDU_S* const recv_p
                 /* Checking the Sequence of the Confirmed Timestamps CTSinSeq == true */
                 if (check_seq_confirmed_timestamp(self))
                 {
+                    LOG_INFO("check_seq_comfirmed_timestamp true");
                     process_regular_receipt(self);
                 }
                 else
                 {
+                    LOG_INFO("check_seq_comfirmed_timestamp false");
                     close_connection(self);
 
                     // pdu_to_send = DiscReq(8, NO_DETAILED_REASON, self);
@@ -609,18 +615,17 @@ StdRet_t Sm_Init (SmType *self)
     return ret;
 }
 
-void Sm_HandleEvent(SmType* const self, const Event event, PDU_S* const recv_pdu)
+void Sm_HandleEvent(SmType* const self, const Event event, PDU_S* const pdu)
 {
     assert(self != NULL);
 
-    // PDU_S pdu_to_send = { 0 };
-
-    LOG_INFO("connection: %i, state: %i", self->channel, self->state);
+    State old_state = self->state;
+    LOG_INFO("connection: %i, state: %i, event: %u", self->channel, self->state, event);
     /* Delegate the event handling to the appropriate state handler */
-    self->handle_event(self, event, recv_pdu);
-
+    self->handle_event(self, event, pdu);
     LOG_INFO("connection: %i, state: %i", self->channel, self->state);
 
+#if 1
     /* Additional event handling for timer events */
     if (event == EVENT_TH_ELAPSED) {
         switch (self->state) {
@@ -646,9 +651,12 @@ void Sm_HandleEvent(SmType* const self, const Event event, PDU_S* const recv_pdu
     } else if (event == EVENT_TI_ELAPSED) {
         close_connection(self);
 
+        disc_req_pdu(DISC_REASON_TIMEOUT_INCOMING_MSG, pdu);
         // pdu_to_send = DiscReq(2, NO_DETAILED_REASON, self);
         /* TODO: RTR - Send DiscReq(4) */
     }
+
+#endif
 
     /* Update state handler */
     switch (self->state) {

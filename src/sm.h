@@ -36,8 +36,8 @@ typedef enum {
     EVENT_RECV_HB,
     EVENT_RECV_DATA,
     EVENT_RECV_RETR_DATA,
+    EVENT_NO_SM_EVENT, /* last */
 } Event;
-
 
 typedef enum {
     ROLE_CLIENT = 0U,

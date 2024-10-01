@@ -46,18 +46,36 @@ add_executable(${PROJECT_NAME}
 if(USE_CFG_SERVER)
     target_sources(${PROJECT_NAME} PRIVATE 
         src/RastaS_Lcfg_server.c )
+    add_compile_definitions(PEER_1_IP=\"172.32.0.3\")
+    add_compile_definitions(PEER_1_HASH=8243780227304282481)
 else()
     target_sources(${PROJECT_NAME} PRIVATE 
         src/RastaS_Lcfg_client.c )
+    add_compile_definitions(PEER_1_IP=\"172.32.0.4\")
+    add_compile_definitions(PEER_1_HASH=8243780227304282482)
 endif(USE_CFG_SERVER)
+
+add_compile_definitions(TIMER_HASH=8243780227304282480)
+add_compile_definitions(PEER_2_HASH=8243780227304282483)
+add_compile_definitions(PEER_3_HASH=8243780227304282484)
+add_compile_definitions(EXIT_HASH=8243780227304282485)
 
 if(USE_TEST_CMOCKA)
     # cmocka test framework
     add_library(cmocka SHARED IMPORTED)
-    set_target_properties(cmocka PROPERTIES
-        IMPORTED_LOCATION "/usr/local/lib/libcmocka.dylib"
-        INTERFACE_INCLUDE_DIRECTORIES "/usr/local/include"    
-    )
+    if (APPLE)
+        set_target_properties(cmocka PROPERTIES
+            IMPORTED_LOCATION "/usr/local/lib/libcmocka.dylib"
+            INTERFACE_INCLUDE_DIRECTORIES "/usr/local/include"
+        )
+    endif(APPLE)
+    if(UNIX)
+        set_target_properties(cmocka PROPERTIES
+            IMPORTED_LOCATION "/usr/lib/x86_64-linux-gnu/libcmocka.so"
+            INTERFACE_INCLUDE_DIRECTORIES "/usr/include"
+            INTERFACE_INCLUDE_DIRECTORIES "/usr/include/cmockery"
+        )
+    endif(UNIX)
 
     target_sources(${PROJECT_NAME} PRIVATE
         src/test_sm_connection.c 

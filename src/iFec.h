@@ -8,11 +8,14 @@
 #include "RXF_PortMacros.h"
 #include "RXF_Monitor.h"
 
+#include "sm.h"
+
 /* Forward declaration for VTBL */
 struct iFec;
 
 struct RastaSConn {
-
+    State old;
+    State new;
 };
 typedef struct RastaSConn RastaSConn;
 

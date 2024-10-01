@@ -59,8 +59,8 @@ typedef struct PDU_S {
     uint32_t confirmed_sequence_number;
     uint32_t timestamp;
     uint32_t confirmed_timestamp;
-    uint8_t *payload;
-    uint8_t *safety_code;
+    const uint8_t *payload;
+    const uint8_t *safety_code;
 } PDU_S;
 
 typedef enum {
@@ -91,7 +91,7 @@ void serialize_pdu(PDU_S *pdu, uint8_t *buffer, const size_t buffer_size);
  * @param[in]   buffer_size The size of the buffer (PDU_FIXED_FIELDS_LENGTH + payload length). Payload length depends on message type. 
  * @param[out]  pdu         Protocol Data Unit (PDU_S) structure.
  */
-void deserialize_pdu(uint8_t *buffer, const size_t buffer_size, PDU_S *pdu);
+void deserialize_pdu(const uint8_t* const buffer, const size_t buffer_size, PDU_S *pdu);
 
 /**
  * @brief Create PDU for Connection Request.
